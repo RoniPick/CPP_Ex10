@@ -45,8 +45,9 @@ namespace ariel{
 
         //flag = 0
         void OrgChart::iterator::init_level_order(Node* head){
-            if(head == nullptr)
+            if(head == nullptr){
                 throw invalid_argument("Empty tree");
+            }
             
             // Create an empty queue
             queue<Node*> q;
@@ -69,28 +70,29 @@ namespace ariel{
 
         //flag = 1
         void OrgChart::iterator::init_reverse_level_order(Node* head){
-            if(head == nullptr)
+            if(head == nullptr){
                 throw invalid_argument("Empty tree");
+            }
                     
             stack<Node*> s;
             queue<Node*> q;
             q.push(head);
 
-            while (q.empty() == false){
+            while (!q.empty()){
                 // Dequeue node and make it root 
                 Node* node = q.front();
                 q.pop();
                 s.push(node);
 
                 //adding the childrens from right to left
-                for(int i=(node->children.size()-1); i >= 0; i--){
+                for(int i=(int)(node->children.size()-1); i >= 0; i--){
                         q.push(node->children[(size_t)i]);
                     }
                 
             }
         
             // Removing all the items from stack and adding them to the list
-            while(s.empty() == false){
+            while(!s.empty()){
                 Node* node = s.top();
                 this->list.push_back(node);
                 s.pop();
@@ -100,9 +102,10 @@ namespace ariel{
 
         //flag = 2
         void OrgChart::iterator::init_preorder(Node* head){
-            if(head == nullptr)
+            if(head == nullptr){
                 throw invalid_argument("Empty tree");
-        
+            }
+                
             // create an empty stack and push the root node
             stack<Node*> stack;
             stack.push(head);
@@ -115,7 +118,7 @@ namespace ariel{
                 this->list.push_back(node);
         
                 //adding the childrens from right to left
-                for(int i=(node->children.size()-1); i >= 0; i--){
+                for(int i=(int)(node->children.size()-1); i >= 0; i--){
                         stack.push(node->children[(size_t)i]);
                     }
                 }
@@ -162,12 +165,15 @@ namespace ariel{
         }
         
         Node::Node(){
-
+            this->name = "";
+            this->parent = nullptr;
+            this->children = vector<Node*>();
         }
 
+        
         Node::Node(Node* prev, string person){
             this->parent = prev;
-            this->name = person;
+            this->name = std::move(person);
             this->children = vector<Node*>();
 
         }
@@ -177,8 +183,8 @@ namespace ariel{
             this->organization.resize(0);
         }
 
-        OrgChart& OrgChart::add_root(string root){
-            if(root == ""){
+        OrgChart& OrgChart::add_root(const string &root){
+            if(root.empty()){
                 throw invalid_argument("Invalid name");
             }
             if(this->head == NULL){
@@ -193,11 +199,11 @@ namespace ariel{
             return *this;
         }
 
-        OrgChart& OrgChart::add_sub(string person1, string person2){
+        OrgChart& OrgChart::add_sub(const string &person1, const string &person2){
             if(this->organization.empty()){
                 throw invalid_argument("The list is empty");
             }
-            if(person1 == "" || person2 == ""){
+            if(person1.empty()|| person2.empty()){
                 throw invalid_argument("Invalid name");
             }
 
@@ -217,7 +223,7 @@ namespace ariel{
             A function that help to find the node, if it doesn't exist it will return null
             else it will return the pointer to the node
         */
-        Node* OrgChart::search(Node* head, string person){
+        Node* OrgChart::search(Node* head, const string &person){
             if(head->name == person){
                 return head;
             }
@@ -236,7 +242,7 @@ namespace ariel{
             return nullptr;
         }
 
-        OrgChart::iterator OrgChart::begin(){
+        OrgChart::iterator OrgChart::begin() const{
             return iterator(this->head, 0);
         }
 
@@ -248,11 +254,11 @@ namespace ariel{
         For this function we use the init_level_order function by creating a new
         iterator with flag = 0
         */
-        OrgChart::iterator OrgChart::begin_level_order(){
+        OrgChart::iterator OrgChart::begin_level_order() const{
             return iterator(this->head, 0);
         }
 
-        OrgChart::iterator OrgChart::end_level_order(){
+        OrgChart::iterator OrgChart::end_level_order() const{
             if(this->head == nullptr){
                 throw invalid_argument("Empty tree");
             }
@@ -263,18 +269,18 @@ namespace ariel{
         For this function we use the init_reverse_level_order function by creating a new
         iterator with flag = 1
         */
-        OrgChart::iterator OrgChart::begin_reverse_order(){
+        OrgChart::iterator OrgChart::begin_reverse_order() const{
            return iterator(this->head, 1);
         }
 
-        OrgChart::iterator OrgChart::end_reverse_order(){
+        OrgChart::iterator OrgChart::end_reverse_order() const{
             if(this->head == nullptr){
                 throw invalid_argument("Empty tree");
             }
             return iterator();
         }
         
-        OrgChart::iterator OrgChart::reverse_order(){
+        OrgChart::iterator OrgChart::reverse_order() const{
             if(this->head == nullptr){
                 throw invalid_argument("Empty tree");
             }
@@ -285,18 +291,18 @@ namespace ariel{
         For this function we use the init_preorder function by creating a new iterator 
         with flag = 2
         */
-        OrgChart::iterator OrgChart::begin_preorder(){
+        OrgChart::iterator OrgChart::begin_preorder() const{
             return iterator(this->head, 2);
         }
 
-        OrgChart::iterator OrgChart::end_preorder(){
+        OrgChart::iterator OrgChart::end_preorder() const{
             if(this->head == nullptr){
                 throw invalid_argument("Empty tree");
             }
             return iterator();
         }
 
-        string OrgChart::get_root(){
+        string OrgChart::get_root() const{
             return this->head->name;
         }
 
@@ -306,23 +312,41 @@ namespace ariel{
             return out;
         }
 
-        // Output function for the organization
-        ostream& operator<<(ostream &out, const OrgChart &chart){
-            queue<Node*> q;
-            q.push(chart.head);
-            
-            while (q.empty() == false){
-                // Adding front of queue to the vector and remove it from queue
-                Node* node = q.front();
-                out << node->name;
-                out << ' ';
-                q.pop();
-                    
-                for(int i=0; i<node->children.size(); i++){
-                    q.push(node->children[(size_t)i]);
-                }
+        void OrgChart::printChart(Node* head, string tab){
+            cout << tab << "---->" << head->name << endl;
+
+            if(head->children.empty()){
+                tab+="          ";
+            }
+            else{
+                tab+="|->          ";
             }
 
+            for(size_t i=0; i<head->children.size(); i++){
+                printChart(head->children[i], tab);
+            }
+        }
+
+        // Output function for the organization
+        ostream& operator<<(ostream &out, const OrgChart &chart){
+            // queue<Node*> q;
+            // q.push(chart.head);
+            
+            // while (!q.empty()){
+            //     // Adding front of queue to the vector and remove it from queue
+            //     Node* node = q.front();
+            //     out << node->name;
+            //     out << ' ';
+            //     q.pop();
+                    
+            //     for(int i=0; i<node->children.size(); i++){
+            //         q.push(node->children[(size_t)i]);
+            //     }
+            // }
+            OrgChart::printChart(chart.head, "");
+            
             return out;
         }
+
+      
 }

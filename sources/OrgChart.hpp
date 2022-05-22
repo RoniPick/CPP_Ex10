@@ -14,6 +14,11 @@ namespace ariel{
         string name;
         Node(Node* prev, string person);
         Node();
+        ~Node(){
+            for(Node *node: children){
+                delete node;
+            }
+        }
         
         friend ostream& operator<<(ostream &out, const Node &node);        
     };
@@ -49,29 +54,31 @@ namespace ariel{
         
     public:
         OrgChart();
-        // ~OrgChart();
+        ~OrgChart(){
+            delete this->head;
+        }
         vector<Node*> organization;
         Node* head;
 
-        OrgChart& add_root(string root);
-        OrgChart& add_sub(string person1, string person2);
-        iterator begin();
-        iterator end();
+        OrgChart& add_root(const string &root);
+        OrgChart& add_sub(const string &person1, const string &person2);
+        iterator begin() const;
+        static iterator end();
 
-        iterator begin_level_order();
-        iterator end_level_order();
-        iterator begin_reverse_order();
-        iterator reverse_order();
-        iterator end_reverse_order();
-        iterator begin_preorder();
-        iterator end_preorder();
+        iterator begin_level_order() const;
+        iterator end_level_order() const;
+        iterator begin_reverse_order() const;
+        iterator reverse_order() const;
+        iterator end_reverse_order() const;
+        iterator begin_preorder() const;
+        iterator end_preorder() const;
 
-        Node* search(Node* head, string person);
-        string get_root();
+        Node* search(Node* head, const string &person);
+        string get_root() const;
         
 
         friend ostream& operator<<(ostream &out, const OrgChart &chart);
-
+        static void printChart(Node* head, string tab);
 
     };
     
