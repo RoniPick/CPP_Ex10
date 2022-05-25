@@ -19,6 +19,10 @@ namespace ariel{
                 delete node;
             }
         }
+        Node(Node& n) = default;
+        Node(Node&& n) = default;
+        Node& operator=(Node&&) = default;
+        Node& operator=(const Node& n) = default;
         
         friend ostream& operator<<(ostream &out, const Node &node);        
     };
@@ -57,6 +61,12 @@ namespace ariel{
         ~OrgChart(){
             delete this->head;
         }
+
+        OrgChart(OrgChart& org) = default;
+        OrgChart(OrgChart&& org) = default;
+        OrgChart& operator=(OrgChart&&) = default;
+        OrgChart& operator=(const OrgChart& org) = default;
+        
         vector<Node*> organization;
         Node* head;
 

@@ -313,13 +313,13 @@ namespace ariel{
         }
 
         void OrgChart::printChart(Node* head, string tab){
-            cout << tab << "---->" << head->name << endl;
+            cout << tab << "^---->" << head->name << endl;
 
-            if(head->children.empty()){
-                tab+="          ";
+            if(!(head->children.empty())){
+                tab+="|    ";
             }
             else{
-                tab+="|->          ";
+                tab+="     ";
             }
 
             for(size_t i=0; i<head->children.size(); i++){
@@ -329,20 +329,6 @@ namespace ariel{
 
         // Output function for the organization
         ostream& operator<<(ostream &out, const OrgChart &chart){
-            // queue<Node*> q;
-            // q.push(chart.head);
-            
-            // while (!q.empty()){
-            //     // Adding front of queue to the vector and remove it from queue
-            //     Node* node = q.front();
-            //     out << node->name;
-            //     out << ' ';
-            //     q.pop();
-                    
-            //     for(int i=0; i<node->children.size(); i++){
-            //         q.push(node->children[(size_t)i]);
-            //     }
-            // }
             OrgChart::printChart(chart.head, "");
             
             return out;

@@ -1,3 +1,4 @@
+
 #!make -f
 # This Makefile can handle any set of cpp and hpp files.
 # To use it, you should put all your cpp and hpp files in the SOURCE_PATH folder.
@@ -38,14 +39,11 @@ StudentTest3.cpp:
 	curl https://raw.githubusercontent.com/dvirGev/CPP--Ex5-par1/main/Test.cpp > $@
 
 tidy:
-	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
+	clang-tidy $(SOURCES) $(HEADERS) $(TIDY_FLAGS) --
 
 valgrind: test
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
-main: main.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-	
 clean:
 	rm -f $(OBJECTS) *.o test* 
 	rm -f StudentTest*.cpp
